@@ -1,0 +1,46 @@
+
+  // ----------------------------------------------------
+  // Méthode :     GetWebParam
+  // Description : Get 1 value in a GET like String
+  // Exemple :     $T_Value=GetWebParam("size=XXL&colour=red";"colour") => "red"
+  // ----------------------------------------------------
+Si (Faux)
+  // ----------------------------------------------------
+  // Philippe Meyer (20/04/11, 11:25:17)
+  // ----------------------------------------------------
+  // Historique :
+  //
+  // 
+  // ----------------------------------------------------
+C_TEXTE(GetWebParam ;$0)
+C_TEXTE(GetWebParam ;$1)
+C_TEXTE(GetWebParam ;$2)
+Fin de si 
+  // ----------------------------------------------------
+
+C_TEXTE($0)
+C_TEXTE($1)
+C_TEXTE($2)
+
+C_ENTIER LONG($L;$L_Position)
+C_TEXTE($T_Chunk;$T_Param_Cherche;$T_Url;$T_Valeur_Trouvee)
+
+
+$T_Url:=Remplacer chaine($1;"%3D";"=")  //spécifique à 4Dweb
+$T_Url:=Remplacer chaine($T_Url;"%26";"&")
+
+$T_Param_Cherche:=$2
+
+$T_Valeur_Trouvee:=""
+$L:=Longueur($T_Param_Cherche)
+$L_Position:=Position($T_Param_Cherche+"=";$T_Url)
+Si ($L_Position#0)
+$T_Chunk:=Sous chaine($T_Url;$L_Position+$L+1;Longueur($T_Url)-$L_Position)
+$L_Position:=Position("&";$T_Chunk)
+Si ($L_Position#0)  //si ce n'est pas le dernier parametre
+$T_Chunk:=Sous chaine($T_Chunk;1;$L_Position-1)
+Fin de si 
+$T_Valeur_Trouvee:=$T_Chunk
+Fin de si 
+
+$0:=$T_Chunk
