@@ -1,0 +1,160 @@
+  // ----------------------------------------------------
+  // Méthode : Export_To_Text
+  // Description :  renvoie une ligne ascii
+  // Exemple :Export_To_Text ($T_Sep;->$T_Nom;->$T_Prenom->$N_CA;$B_Payant)
+  // ----------------------------------------------------
+Si (Faux)
+  // Nom (OS) : Philippe MEYER (19/03/2012)
+  // ----------------------------------------------------
+  //
+  //
+  //
+  // ----------------------------------------------------
+C_TEXTE(Export_To_Text ;$0)
+C_TEXTE(Export_To_Text ;$1)
+C_POINTEUR(Export_To_Text ;${10})
+C_POINTEUR(Export_To_Text ;${11})
+C_POINTEUR(Export_To_Text ;${12})
+C_POINTEUR(Export_To_Text ;${13})
+C_POINTEUR(Export_To_Text ;${14})
+C_POINTEUR(Export_To_Text ;${15})
+C_POINTEUR(Export_To_Text ;${16})
+C_POINTEUR(Export_To_Text ;${17})
+C_POINTEUR(Export_To_Text ;${18})
+C_POINTEUR(Export_To_Text ;${19})
+C_POINTEUR(Export_To_Text ;${2})
+C_POINTEUR(Export_To_Text ;${20})
+C_POINTEUR(Export_To_Text ;${3})
+C_POINTEUR(Export_To_Text ;${4})
+C_POINTEUR(Export_To_Text ;${5})
+C_POINTEUR(Export_To_Text ;${6})
+C_POINTEUR(Export_To_Text ;${7})
+C_POINTEUR(Export_To_Text ;${8})
+C_POINTEUR(Export_To_Text ;${9})
+Fin de si 
+  // ----------------------------------------------------
+  // Paramètres
+  // ----------------------------------------------------
+
+
+C_TEXTE($0)
+C_TEXTE($1)
+C_POINTEUR(${10})
+C_POINTEUR(${11})
+C_POINTEUR(${12})
+C_POINTEUR(${13})
+C_POINTEUR(${14})
+C_POINTEUR(${15})
+C_POINTEUR(${16})
+C_POINTEUR(${17})
+C_POINTEUR(${18})
+C_POINTEUR(${19})
+C_POINTEUR(${2})
+C_POINTEUR(${20})
+C_POINTEUR(${3})
+C_POINTEUR(${4})
+C_POINTEUR(${5})
+C_POINTEUR(${6})
+C_POINTEUR(${7})
+C_POINTEUR(${8})
+C_POINTEUR(${9})
+
+C_ENTIER LONG($i;$j;$L_Multiplicateur;$L_Nb;$L_Nb_Cellules;$L_Type)
+C_POINTEUR($Ptr_Cellule)
+C_RÉEL($N_Valeur)
+C_TEXTE($T_Sep_Temp;$T_Separateur;$T_Demande;$T_Libelle;$T_Retour;$T_Style;$T_Type;$T_Valeur)
+
+
+$T_Sep_Temp:=$1
+$L_Nb_Cellules:=Nombre de paramètres-1
+
+$T_Retour:=""
+$j:=0
+$i:=0
+
+Si ($L_Nb_Cellules>=1)
+$T_Separateur:=""  // le premier tour : pas de séparateur
+Boucle ($i;1;$L_Nb_Cellules)
+$Ptr_Cellule:=${$i+1}
+$L_Type:=Type($Ptr_Cellule->)
+Au cas ou 
+: ($L_Type=Est un tableau chaîne) | ($L_Type=Est un tableau texte)
+$L_Nb:=Taille tableau($Ptr_Cellule->)
+Boucle ($j;1;$L_Nb)
+$T_Retour:=$T_Retour+$T_Separateur+$Ptr_Cellule->{$j}
+$T_Separateur:=$T_Sep_Temp
+Fin de boucle 
+
+: ($L_Type=Est un tableau booléen)
+$L_Nb:=Taille tableau($Ptr_Cellule->)
+Boucle ($j;1;$L_Nb)
+$T_Valeur:=(Num($Ptr_Cellule->{$j})*"VRAI")+(Num(Non($Ptr_Cellule->{$j}))*"FAUX")
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+$T_Separateur:=$T_Sep_Temp
+Fin de boucle 
+
+: ($L_Type=Est un tableau entier) | ($L_Type=Est un tableau entierlong)
+$L_Nb:=Taille tableau($Ptr_Cellule->)
+Boucle ($j;1;$L_Nb)
+$T_Valeur:=Chaîne($Ptr_Cellule->{$j})
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+$T_Separateur:=$T_Sep_Temp
+Fin de boucle 
+
+: ($L_Type=Est un tableau numérique)
+$L_Nb:=Taille tableau($Ptr_Cellule->)
+Boucle ($j;1;$L_Nb)
+$N_Valeur:=Arrondi($Ptr_Cellule->{$j};2)
+$T_Valeur:=Chaîne(Ent($N_Valeur))+","+Chaîne((Dec($N_Valeur)*100);"00")
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+$T_Separateur:=$T_Sep_Temp
+Fin de boucle 
+
+: ($L_Type=Est un tableau date)
+$L_Nb:=Taille tableau($Ptr_Cellule->)
+Boucle ($j;1;$L_Nb)
+$T_Valeur:=Chaîne($Ptr_Cellule->{$j})
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+$T_Separateur:=$T_Sep_Temp
+Fin de boucle 
+
+: ($L_Type=Est un champ alpha) | ($L_Type=Est une variable chaîne) | ($L_Type=Est un texte)
+$T_Valeur:=$Ptr_Cellule->
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+
+: ($L_Type=Est un booléen)
+$T_Valeur:=(Num($Ptr_Cellule->)*"VRAI")+(Num(Non($Ptr_Cellule->))*"FAUX")
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+
+: ($L_Type=Est un entier) | ($L_Type=Est un entier long)
+$T_Valeur:=Chaîne($Ptr_Cellule->)
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+
+: ($L_Type=Est un numérique)
+$L_Multiplicateur:=1
+Si ($Ptr_Cellule-><0)
+$L_Multiplicateur:=-1
+Fin de si 
+$Ptr_Cellule->:=Arrondi($Ptr_Cellule->;2)
+$T_Valeur:=Chaîne($L_Multiplicateur*(Ent(Abs($Ptr_Cellule->))))+","+Chaîne((Dec($Ptr_Cellule->)*100);"00")
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+
+: ($L_Type=Est une date)
+$T_Valeur:=Chaîne($Ptr_Cellule->;4)
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+
+: ($L_Type=Est une heure)
+$T_Valeur:=Chaîne heure($Ptr_Cellule->)
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+
+Sinon 
+$T_Valeur:=""
+$T_Retour:=$T_Retour+$T_Separateur+$T_Valeur
+Fin de cas 
+
+$T_Separateur:=$T_Sep_Temp
+Fin de boucle 
+Fin de si 
+
+$0:=$T_Retour
+
