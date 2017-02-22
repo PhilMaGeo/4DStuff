@@ -1,0 +1,99 @@
+
+  // ----------------------------------------------------
+  // Méthode : HTML_Tableaux_Vers_Select
+  // Description : A l'aide d'une série d'attributs texte et de 2 tableaux renvoi un select html
+  // Exemple : $T_Source_Web:=HTML_Tableaux_Vers_Select("id=monid&name=monname";->$TT_Cles;->$TT_Valeurs)
+  // ----------------------------------------------------
+Si (Faux)
+  // Nom : Philippe Meyer (15/09/16, 15:46:07)
+  // ----------------------------------------------------
+  // Historique :
+  // 18/11/2016 : Philippe Meyer => 4eme parametre permettant de sélectionner une ligne
+  // 
+  // ----------------------------------------------------
+C_TEXTE(HTML_Tableaux_Vers_Select ;$0)
+C_TEXTE(HTML_Tableaux_Vers_Select ;$1)
+C_POINTEUR(HTML_Tableaux_Vers_Select ;$2)
+C_POINTEUR(HTML_Tableaux_Vers_Select ;$3)
+C_POINTEUR(HTML_Tableaux_Vers_Select ;${4})
+Fin de si 
+
+C_TEXTE($0)
+C_TEXTE($1)
+C_POINTEUR($2)  // tableau texte ou entier long
+C_POINTEUR($3)  // tableau texte ou entier long
+C_POINTEUR(${4})
+
+C_ENTIER LONG($i;$L_Taille;$L_Taille_Cles;$L_Taille_Valeurs;$L_Type;$L_Ligne_Choisie)
+C_TEXTE($T_Attributs;$T_Class;$T_Id;$T_Javascript;$T_Name;$T_Retour)
+
+TABLEAU TEXTE($TT_Cles;0)
+TABLEAU TEXTE($TT_Valeurs;0)
+
+$T_Attributs:=$1
+$T_Retour:=""
+$L_Ligne_Choisie:=-1
+
+Si (Nombre de paramètres>=4)
+$L_Ligne_Choisie:=Chercher dans tableau($2->;$4->)
+Fin de si 
+
+$T_Id:=Gen_GetWebParam ($T_Attributs;"id")
+$T_Name:=Gen_GetWebParam ($T_Attributs;"name")
+$T_Class:=Gen_GetWebParam ($T_Attributs;"class")
+$T_Javascript:=Gen_GetWebParam ($T_Attributs;"js")
+
+$L_Type:=Type($2->)
+Au cas ou 
+: ($L_Type=Est un tableau entierlong)  //(16)
+Gen_Tableau_Long_Vers_Texte ($2;->$TT_Cles)
+Sinon   //(16)
+COPIER TABLEAU($2->;$TT_Cles)
+Fin de cas 
+
+$L_Type:=Type($3->)
+Au cas ou 
+: ($L_Type=Est un tableau entierlong)  //(16)
+Gen_Tableau_Long_Vers_Texte ($3;->$TT_Valeurs)
+Sinon   //(16)
+COPIER TABLEAU($3->;$TT_Valeurs)
+Fin de cas 
+
+$L_Taille_Cles:=Taille tableau($TT_Cles)
+$L_Taille_Valeurs:=Taille tableau($TT_Valeurs)
+
+$L_Taille:=$L_Taille_Cles
+Si ($L_Taille_Valeurs<$L_Taille)
+$L_Taille:=$L_Taille_Valeurs
+Fin de si 
+
+$T_Retour:="<select"
+
+  // Ajout des attribut du select
+Si (Longueur($T_Id)>0)
+$T_Retour:=$T_Retour+" id='"+$T_Id+"'"
+Fin de si 
+Si (Longueur($T_Name)>0)
+$T_Retour:=$T_Retour+" name='"+$T_Name+"'"
+Fin de si 
+Si (Longueur($T_Class)>0)
+$T_Retour:=$T_Retour+" class='"+$T_Class+"'"
+Fin de si 
+Si (Longueur($T_Javascript)>0)
+$T_Retour:=$T_Retour+" "+$T_Javascript
+Fin de si 
+
+$T_Retour:=$T_Retour+">\r"
+$T_Tag:=""
+Boucle ($i;1;$L_Taille)
+Si ($L_Ligne_Choisie=$i)
+$T_Tag:=" selected "
+Sinon 
+$T_Tag:=""
+Fin de si 
+$T_Retour:=$T_Retour+"<option value='"+$TT_Cles{$i}+"' "+$T_Tag+">"+$TT_Valeurs{$i}+"</option>"
+Fin de boucle 
+
+$T_Retour:=$T_Retour+"</select>\r"
+
+$0:=$T_Retour
