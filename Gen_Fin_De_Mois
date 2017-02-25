@@ -1,0 +1,23 @@
+  ` ----------------------------------------------------
+  ` Nom utilisateur (OS) : Philippe MEYER
+  ` Date et heure : 25/02/17, 16:26:32
+  ` ----------------------------------------------------
+  ` Méthode : Gen_Fin_De_Mois
+  ` Description : renvoi le dernier jour du mois
+  ` Exemple : $D_Sortie:=Gen_Fin_De_Mois($D_Entree)
+  ` ----------------------------------------------------
+
+C_DATE($0)
+C_DATE($1)
+
+C_DATE($D_Entree;$D_Sortie)
+
+$D_Entree:=$1
+Si ($D_Entree=!00/00/00!)
+	$D_Sortie:=!00/00/00!
+Sinon 
+	$L_Jour_Du_Mois:=Jour de($D_Entree)
+	$D_Sortie:=Ajouter a date($D_Entree;0;1;-$L_Jour_Du_Mois)
+Fin de si 
+
+$0:=$D_Sortie
