@@ -1,0 +1,34 @@
+
+  // ----------------------------------------------------
+  // Method : Gen_End_Of_Month
+  // Description : Given a date, returns the last day of the month
+  // Example : $D_Out:=Gen_End_Of_Month($D_In)
+  // ----------------------------------------------------
+If (False)
+  // ----------------------------------------------------
+  // Philippe MEYER (25/02/17, 16:36:52)
+  // ----------------------------------------------------
+  // History :
+  //
+  // 
+C_DATE(Gen_End_Of_Month ;$0)
+C_DATE(Gen_End_Of_Month ;$1)
+End if 
+  // ----------------------------------------------------
+
+
+C_DATE($0)
+C_DATE($1)
+
+C_DATE($D_In;$D_Out)
+C_LONGINT($L_Day_In_Month)
+
+$D_In:=$1
+If ($D_In=!00/00/0000!)
+$D_Out:=!00/00/0000!
+Else 
+$L_Day_In_Month:=Day of($D_In)
+$D_Out:=Add to date($D_In;0;1;-$L_Day_In_Month)
+End if 
+
+$0:=$D_Out
