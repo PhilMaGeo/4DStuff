@@ -1,0 +1,64 @@
+  // ----------------------------------------------------
+  // Méthode : Gen_Modulo_Chaine
+  // Description : Renvoi le modulo d'un nombre exprimé en chaine car dépassant les capacités des entiers long (ex : test d'IBAN)   
+  // Exemple : $L_Modulo:=Gen_Modulo_Chaine("15257614518292670479952944063";91)
+  // ----------------------------------------------------
+Si (Faux)  // Dev Creation
+  // Nom (OS) : Philippe MEYER (08/11/2013)
+  // --Historique---------------------------------------
+  // 02/12/2013 :  Porté par : Philippe MEYER 
+  // Le principe est celui de la division d'écolier.
+  // Nous prenons des portions courtes du nombre de droite à gauche, les divisons puis récupérons le reste que nous accolons à la portion suivante
+  // Le modulo est ce qui reste à la fin (ce qui n'est plus divisible
+  // ---------------------------------------------------
+Fin de si 
+  // ----------------------------------------------------
+  // Paramètres :
+  // C_ENTIER LONG($0) <= Le modulo renvoyé
+  // C_TEXTE($1)       => Le très grand nombre en chaine
+  // C_ENTIER LONG($2) => Le diviseur
+  // ----------------------------------------------------
+
+
+C_ENTIER LONG($0)
+C_TEXTE($1)
+C_ENTIER LONG($2)
+
+C_ENTIER LONG($i;$L_Diviseur;$L_Modulo;$L_Nb_Tours;$L_Nombre_Partiel;$L_Taille_Nombre)
+C_TEXTE($T_Chunk;$T_Modulo;$T_Nom_Long_En_Chaine)
+
+Si (Faux)
+C_ENTIER LONG(Gen_Modulo_Chaine ;$0)
+C_TEXTE(Gen_Modulo_Chaine ;$1)
+C_ENTIER LONG(Gen_Modulo_Chaine ;$2)
+Fin de si 
+
+$T_Nom_Long_En_Chaine:=$1
+$L_Diviseur:=$2
+
+$L_Taille_Nombre:=Longueur($T_Nom_Long_En_Chaine)
+
+$L_Modulo:=-1
+$T_Modulo:=""
+
+Si ($L_Taille_Nombre<8)
+$L_Nombre_Partiel:=Num($T_Nom_Long_En_Chaine)
+$L_Modulo:=$L_Nombre_Partiel%$L_Diviseur
+Sinon 
+  // Nous allons moduler des nombres plus petis en plusieurs fois 
+  // ex : 15\7 = 2 et num(15%7#0) = num(1#0) = num(vrai) = 1 => $L_Nb_Tours=3
+$L_Nb_Tours:=($L_Taille_Nombre\7)
+$L_Modulo:=$L_Taille_Nombre%7
+Si ($L_Modulo>0)
+$L_Nb_Tours:=$L_Nb_Tours+1
+Fin de si 
+Boucle ($i;0;($L_Nb_Tours-1))
+$T_Chunk:=$T_Modulo+Sous chaîne($T_Nom_Long_En_Chaine;($i*7)+1;7)  // après chaque division on rajoute le reste (modulo) au chiffres suivant
+$L_Nombre_Partiel:=Num($T_Chunk)
+$L_Modulo:=$L_Nombre_Partiel%$L_Diviseur
+$T_Modulo:=Chaîne($L_Modulo)  // Reste de la division pour le tour suivant
+Fin de boucle 
+Fin de si 
+
+$0:=$L_Modulo
+
