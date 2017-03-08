@@ -1,0 +1,68 @@
+  // ----------------------------------------------------
+  // Méthode : Gen_Grise_Couleur
+  // Description : Purement esthétique : permet de faire des dégradés dans les listbox par exemple (utiliser avec OBJET FIXER COULEURS RVB)
+  // Exemple : $L_Grisee:=Gen_Grise_Couleur($L_Originale;10)
+  //
+  // ----------------------------------------------------
+Si (Faux)
+  // Nom : Philippe MEYER (20/10/11, 13:52:06)
+  // ----------------------------------------------------
+  // Historique :
+  //
+  //
+  // ----------------------------------------------------
+C_ENTIER LONG(Gen_Grise_Couleur ;$0)
+C_ENTIER LONG(Gen_Grise_Couleur ;$1)
+C_ENTIER LONG(Gen_Grise_Couleur ;$2)
+  // ----------------------------------------------------
+Fin de si 
+
+C_ENTIER LONG($0)
+C_ENTIER LONG($1)
+C_ENTIER LONG($2)
+
+C_ENTIER LONG($L_Bleu;$L_Grisee;$L_Offset;$L_Originale;$L_Rouge;$L_Vert)
+
+$L_Originale:=$1
+$L_Offset:=$2
+
+$L_Bleu:=0
+$L_Vert:=0
+$L_Rouge:=0
+
+Si ($L_Originale>(256*256))
+$L_Rouge:=$L_Originale\(256*256)
+$L_Originale:=$L_Originale%(256*256)
+Fin de si 
+
+Si ($L_Originale>256)
+$L_Vert:=$L_Originale\256
+$L_Originale:=$L_Originale%256
+Fin de si 
+
+$L_Bleu:=$L_Originale
+
+Si ($L_Rouge>128)
+$L_Rouge:=$L_Rouge-$L_Offset
+Sinon 
+$L_Rouge:=$L_Rouge+$L_Offset
+
+Fin de si 
+
+Si ($L_Vert>128)
+$L_Vert:=$L_Vert-$L_Offset
+Sinon 
+$L_Vert:=$L_Vert+$L_Offset
+Fin de si 
+
+Si ($L_Bleu>128)
+$L_Bleu:=$L_Bleu-$L_Offset
+Sinon 
+$L_Bleu:=$L_Bleu-$L_Offset
+Fin de si 
+
+$L_Grisee:=($L_Rouge*256*256)
+$L_Grisee:=$L_Grisee+($L_Vert*256)
+$L_Grisee:=$L_Grisee+$L_Bleu
+
+$0:=$L_Grisee
